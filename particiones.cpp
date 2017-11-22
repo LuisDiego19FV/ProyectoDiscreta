@@ -1,39 +1,53 @@
-#include <opencv2/core/core.hpp>
 #include <iostream>
 #include <stdlib.h>
 
-using namespace cv;
 using namespace std;
 
 int firstPartition (int, int, int*);
 bool nextPartition (int, int*);
 
+//Programa Principal
 int main(){
 
-  int num;
-	int lenght;
+  int num; //Numero deseado
+  int lenght; //Tamanio de las particiones
   bool stop = false;
 
-  cout << "Ingrese numero para particionar" << endl;
-  cin >> num;
-  cout << "Ingrese la longitud de las particiones" << endl;
-  cin >> lenght;
+  //Se piden los datos
+  while(true){
+  	cout << "Ingrese numero para particionar:" << endl;
+  	cin >> num;
+  	cout << "Ingrese la longitud de las particiones:" << endl;
+  	cin >> lenght;
+  	if(num >= lenght){
+  	  break;
+  	}else{
+  	  cout << "Error, la longitud de las particiones debe ser menor o igual al numero!\n" << endl;
+  	}
+  }
+  
+  cout << endl << "Particiones:" << endl;
 
-  cout << endl << "Particiones" << endl;
+  int partitions[lenght]; //Arreglo para gurdar los valores de las particiones
+  int *d_partitions = &partitions[0]; //Puntero hacia el primer valor de la particion
 
-  int partitions[lenght];
-  int *d_partitions = &partitions[0];
-
+  //Se calcula la primera particion
   firstPartition(num, lenght, d_partitions);
 
   while (!stop) {
 
+  	//Se imprimen los valores de la ultima particion
     for (int i = 0; i < lenght; i++) {
-      cout << partitions[i] << " ";
+      if(i==0){
+      	cout << partitions[i];
+      }else{
+      	cout << "+" << partitions[i];
+      }
     }
 
     cout << endl;
 
+    //Se calcula la siguiente particion
     stop = nextPartition(lenght, d_partitions);
 
   }
@@ -41,10 +55,15 @@ int main(){
   return 0;
 }
 
+//Funcion que calcula la primera particion
 int firstPartition (int n, int k, int *d_partition) {
 
+  //El primer valor de la primera particion siempres se define como
+  //el numero deseado menos el largo de la particion mas uno.
   *d_partition = n-k+1;
 
+  //La primera particion se define en todos los otros espacios
+  //que no sean el primero como 1.
   for (int i = 1; i < k; i++){
 
     *(d_partition + i) = 1;
@@ -55,10 +74,15 @@ int firstPartition (int n, int k, int *d_partition) {
 
 }
 
+//Funcion que calcula el resto de particiones que no sean la primera
 bool nextPartition (int k, int *d_partition) {
 
+  //Se recorren todos los espacios del arreglo, empezando por el ultimo hasta llegar al segundo
   for (int i = (k - 1); i >0; i--) {
 
+  	//Si el valor anterior al actual en el ciclo menos el valor actual es mayor o igual a 2
+  	//se le resta uno al valor anterior y se le suma uno al actual y se sale de la funcion
+  	//devolviendo un false a la bandera para parar.
     if ((*(d_partition + i - 1) - *(d_partition + i)) >= 2) {
 
       //cout << (*(d_partition + i - 1) - *(d_partition + i))  << endl;
@@ -72,6 +96,10 @@ bool nextPartition (int k, int *d_partition) {
 
   }
 
+  //Se recorre por ultima vez (en la llamada de la funcion) el arreglo (si es necesario)
+  //para revisar que el primer valor no siga siendo mayor a los demas valores en el arreglo
+  //en una magnitud de 2. Si lo es se le resta 1 y se suma 1 en el primer valor que el ciclo
+  //encuentre de una magnitud de 2 menor.
   for (int i = 2; i < k; i++) {
 
     if (*d_partition - *(d_partition + i) == 2) {
@@ -85,6 +113,7 @@ bool nextPartition (int k, int *d_partition) {
 
   }
 
+  //Si se pasan los dos ciclos anteriores se termina el programa
   return true;
 
 }
