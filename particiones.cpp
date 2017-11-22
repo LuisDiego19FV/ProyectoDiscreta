@@ -118,7 +118,7 @@ bool nextPartition (int k, int *d_partition) {
   //a revisar permitiendo que se calculen todas las particiones.
   for (int i = 1; i < k; i++) {
 
-    if (*d_partition > *(d_partition + i)) {
+    if (*d_partition < *(d_partition + i)) {
 
       //Almacena el valor de la primera casilla temporalmente.
       int valorTempCasilla1 = *d_partition;
