@@ -25,7 +25,7 @@ int main(){
   	  cout << "Error, la longitud de las particiones debe ser menor o igual al numero!\n" << endl;
   	}
   }
-  
+
   cout << endl << "Particiones:" << endl;
 
   int partitions[lenght]; //Arreglo para gurdar los valores de las particiones
@@ -106,6 +106,26 @@ bool nextPartition (int k, int *d_partition) {
 
       *d_partition -= 1;
       *(d_partition + i) += 1;
+
+      return false;
+
+    }
+
+  }
+
+  //Se asegura que el primer numero sea el mas grande. Esto por dos razones: la primera es
+  //unicamente por estedica, y la segunda es que esto permite que el for de arriba se vuelva
+  //a revisar permitiendo que se calculen todas las particiones.
+  for (int i = 1; i < k; i++) {
+
+    if (*d_partition > *(d_partition + i)) {
+
+      //Almacena el valor de la primera casilla temporalmente.
+      int valorTempCasilla1 = *d_partition;
+
+      //Cambio de valores entre casillas;
+      *d_partition = *(d_partition + 1);
+      *(d_partition + 1) = valorTempCasilla1;
 
       return false;
 
