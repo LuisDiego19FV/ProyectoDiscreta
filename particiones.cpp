@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 #include <stdlib.h>
 
@@ -5,6 +6,8 @@ using namespace std;
 
 int firstPartition (int, int, int*);
 bool nextPartition (int, int*);
+
+int counterProtection;
 
 //Programa Principal
 int main(){
@@ -19,12 +22,32 @@ int main(){
   	cin >> num;
   	cout << "Ingrese la longitud de las particiones:" << endl;
   	cin >> lenght;
+
+    //Programacion Defenciva.
   	if(num >= lenght){
   	  break;
-  	}else{
+  	} else{
   	  cout << "Error, la longitud de las particiones debe ser menor o igual al numero!\n" << endl;
+      counterProtection++;
   	}
+
+    //Programacion Definciva.
+    if(counterProtection > 3){
+      if (system("CLS")) system("clear");
+      cout << "                          ***Precuaucion***                      " << endl;
+      cout << "-> Evite ingresar caracteres no numerales en el proceso.         " << endl;
+      cout << "-> Evite ingresar particiones mayores al numero a particionar.   " << endl;
+      cout << "-> Evite utilizar 0 como longitud.                               " << endl;
+      cout << "   EVITAR SEGUIR LAS INSTRUCCIONES CONLLEVA A MAL FUNCIONAMINETO " << endl;
+      cout << "   INICIANDO NUEVO PROGRAMA...                                 \n" << endl;
+
+      system("./particiones");
+
+      return 0;
+    }
   }
+
+
 
   cout << endl << "Particiones:" << endl;
 
@@ -77,6 +100,8 @@ int firstPartition (int n, int k, int *d_partition) {
 //Funcion que calcula el resto de particiones que no sean la primera
 bool nextPartition (int k, int *d_partition) {
 
+  bool print = false;
+
   //Se recorren todos los espacios del arreglo, empezando por el ultimo hasta llegar al segundo
   for (int i = (k - 1); i >0; i--) {
 
@@ -107,7 +132,7 @@ bool nextPartition (int k, int *d_partition) {
       *d_partition -= 1;
       *(d_partition + i) += 1;
 
-      return false;
+      print = true;
 
     }
 
@@ -116,20 +141,29 @@ bool nextPartition (int k, int *d_partition) {
   //Se asegura que el primer numero sea el mas grande. Esto por dos razones: la primera es
   //unicamente por estedica, y la segunda es que esto permite que el for de arriba se vuelva
   //a revisar permitiendo que se calculen todas las particiones.
-  for (int i = 1; i < k; i++) {
+  for (int i = k -1; i > 0; i--) {
 
-    if (*d_partition < *(d_partition + i)) {
+    if (*(d_partition + i -1) < *(d_partition + i)) {
 
       //Almacena el valor de la primera casilla temporalmente.
-      int valorTempCasilla1 = *d_partition;
+      int valorTempCasilla1 = *(d_partition + i -1);
 
       //Cambio de valores entre casillas;
-      *d_partition = *(d_partition + 1);
-      *(d_partition + 1) = valorTempCasilla1;
+      *(d_partition + i -1) = *(d_partition + i);
+      *(d_partition + i) = valorTempCasilla1;
 
-      return false;
+      //Se regresa i a 1 y se asegura que se imprima el resultado
+      i = k - 1;
+      print = true;
 
     }
+
+  }
+
+  //Si la variable print fue altera alguna vez para ser verdadera, se imprime.
+  if (print) {
+
+    return false;
 
   }
 
